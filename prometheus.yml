@@ -1,9 +1,6 @@
-#prometheus.yml - file
-#this must be in the same directory as of docker-compose.yml file
-
 scrape_configs:
   - job_name: flask
     scrape_interval: 1s
     static_configs:
       - targets:
-          - 127.0.0.1:5000
+          - bytelearn-devops.herokuapp.com
