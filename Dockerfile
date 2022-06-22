@@ -22,3 +22,5 @@ USER 999
 
 ENV PATH="/usr/app/venv/bin:$PATH"
 CMD [ "gunicorn", "--bind", "0.0.0.0:5000", "main:app" ]
+
+# docker build . -t flask-assign
