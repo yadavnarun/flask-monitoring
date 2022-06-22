@@ -5,6 +5,7 @@ from prometheus_client import make_wsgi_app
 from flask_prom import Prometheus
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 Prometheus(app)
 
 

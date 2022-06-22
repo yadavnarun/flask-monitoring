@@ -3,7 +3,8 @@ services:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alerts.rules.yml:/etc/prometheus/alert.rules.yml
     command:
       - --config.file=/etc/prometheus/prometheus.yml
     restart: unless-stopped
