@@ -1,26 +1,34 @@
-from flask import Flask, request
+from flask import Flask, Response
 from datetime import datetime
-from prometheus_flask_exporter import PrometheusMetrics
+import prometheus_client
+from prometheus_client import Counter
 
 app = Flask(__name__)
-metrics = PrometheusMetrics(app, group_by='path')
 
-# static information as metric
-metrics.info('app_info', 'Application info', version='1.0.0')
+graphs = {}
+graphs['t'] = Counter('python_request_operations_total_time_route',
+                      'The total number of processed requests on time route')
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello World'
+@app.route("/")
+def hello():
+    return "Hello World!"
 
 
 @app.route('/time')
-@metrics.counter('invocation_by_type', 'Number of invocations by type',
-                 labels={'item_type': lambda: request.view_args['type']})
 def time():
+    graphs['t'].inc()
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     return current_time
+
+
+@app.route("/metrics")
+def requests_count():
+    res = []
+    for k, v in graphs.items():
+        res.append(prometheus_client.generate_latest(v))
+    return Response(res, mimetype="text/plain")
 
 
 # main driver function
