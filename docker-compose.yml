@@ -1,4 +1,13 @@
 services:
+  server:
+    image: flask-assign
+    container_name: flask-assign
+    restart: always
+    ports:
+      - 5000:5000
+    networks:
+      - bytelean
+
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -10,6 +19,8 @@ services:
     restart: unless-stopped
     ports:
       - 9090:9090
+    depends_on:
+      - server
     networks:
       - bytelean
 
@@ -19,6 +30,8 @@ services:
     restart: unless-stopped
     ports:
       - 3000:3000
+    depends_on:
+      - server
     networks:
       - bytelean
 

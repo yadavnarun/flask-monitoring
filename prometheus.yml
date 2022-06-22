@@ -3,7 +3,7 @@ scrape_configs:
     scrape_interval: 30s
     static_configs:
       - targets:
-          - bytelearn-devops.herokuapp.com
+          - flask-assign:5000
 
 rule_files:
   - "/etc/prometheus/alert.rules.yml"

@@ -1,10 +1,24 @@
-FROM python:3.8-alpine
+FROM python:3.10-slim as build
 
-COPY ./requirements.txt /app/requirements.txt
-WORKDIR /app
+WORKDIR /usr/app
+RUN python -m venv /usr/app/venv
+ENV PATH="/usr/app/venv/bin:$PATH"
+
+COPY requirements.txt .
 RUN pip install -r requirements.txt
-COPY . /app
 
-# configure the container to run in an executed manner
-ENTRYPOINT [ "python" ]
-CMD [ "main.py" ]
+FROM python:3.10-slim
+
+RUN groupadd -g 999 python && \
+    useradd -r -u 999 -g python python
+
+RUN mkdir /usr/app && chown python:python /usr/app
+WORKDIR /usr/app
+
+COPY --chown=python:python --from=build /usr/app/venv ./venv
+COPY --chown=python:python . .
+
+USER 999
+
+ENV PATH="/usr/app/venv/bin:$PATH"
+CMD [ "gunicorn", "--bind", "0.0.0.0:5000", "main:app" ]
