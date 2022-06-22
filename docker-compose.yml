@@ -27,9 +27,14 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - grafana-storage:/var/lib/grafana
     restart: unless-stopped
     ports:
       - 3000:3000
+    env_file:
+      - .env
     depends_on:
       - server
     networks:
@@ -38,3 +43,6 @@ services:
 networks:
   bytelean:
     driver: bridge
+
+volumes:
+  grafana-storage:
